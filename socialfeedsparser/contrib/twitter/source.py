@@ -48,7 +48,7 @@ class TwitterSource(ChannelParser):
         oauth.set_access_token(TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_TOKENS_SECRET)
         return tweepy.API(oauth)
 
-    def prepare_message(self, message):
+    def prepare_message(self, message, channel):
         """
         Convert tweets to standard message.
 

@@ -1,3 +1,4 @@
+from django.conf import settings
 import facebook as fbsdk
 
 from socialfeedsparser.contrib.parsers import ChannelParser, PostParser
@@ -45,15 +46,25 @@ class FacebookSource(ChannelParser):
         api = fbsdk.GraphAPI(FACEBOOK_ACCESS_TOKEN)
         return api
 
-    def prepare_message(self, message):
+    def prepare_message(self, message, channel):
         """
         Convert tweets to standard message.
 
         :param message: message entry to convert.
         :type item: dict
         """
-        l = 'http://www.facebook.com/permalink.php?id=%s&v=wall&story_fbid=%s' \
-            % (message['from']['id'], message['id'].split('_')[1])
+
+        if not 'from' in message:
+            message['from'] = {
+                'id': channel.query,
+                'name': channel.name,
+            }
+            l = 'https://www.facebook.com/%s/posts/%s' \
+                % (message['from']['id'], message['id'].split('_')[1])
+        else:
+            l = 'http://www.facebook.com/permalink.php?id=%s&v=wall&story_fbid=%s' \
+                % (message['from']['id'], message['id'].split('_')[1])
+
         return PostParser(
             uid=message['id'],
             author=message['from']['name'],

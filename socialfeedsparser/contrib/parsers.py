@@ -24,7 +24,7 @@ class ChannelParser(object):
         Retrieves and saves message for the models.Channel instance.
         """
         messages = self.get_messages()
-        messages = [self.prepare_message(message) for message in messages]
+        messages = [self.prepare_message(message, self.channel) for message in messages]
         for message in messages:
             message.save(channel=self.channel)
 
@@ -64,7 +64,7 @@ class ChannelParser(object):
         """
         raise NotImplementedError
 
-    def prepare_message(self, message):
+    def prepare_message(self, message, channel):
         """
         Convert returned datas into standard message.
 

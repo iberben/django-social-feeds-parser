@@ -45,7 +45,7 @@ class InstagramSource(ChannelParser):
         api = InstagramAPI(access_token=INSTAGRAM_ACCESS_TOKEN)
         return api
 
-    def prepare_message(self, message):
+    def prepare_message(self, message, channel):
         """
         Convert posts to standard message.
 
