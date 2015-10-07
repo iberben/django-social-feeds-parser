@@ -1,4 +1,3 @@
-from django.conf import settings
 import facebook as fbsdk
 
 from socialfeedsparser.contrib.parsers import ChannelParser, PostParser
