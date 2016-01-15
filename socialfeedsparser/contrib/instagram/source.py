@@ -2,7 +2,7 @@ import hashlib
 
 from instagram.client import InstagramAPI
 
-from .settings import INSTAGRAM_ACCESS_TOKEN
+from .settings import INSTAGRAM_ACCESS_TOKEN, INSTAGRAM_CLIENT_SECRET
 from socialfeedsparser.contrib.parsers import ChannelParser, PostParser
 
 
@@ -42,7 +42,8 @@ class InstagramSource(ChannelParser):
         """
         Return authenticated connections with Instagram.
         """
-        api = InstagramAPI(access_token=INSTAGRAM_ACCESS_TOKEN)
+        api = InstagramAPI(access_token=INSTAGRAM_ACCESS_TOKEN,
+                           client_secret=INSTAGRAM_CLIENT_SECRET)
         return api
 
     def prepare_message(self, message, channel):
@@ -56,8 +57,10 @@ class InstagramSource(ChannelParser):
             uid=hashlib.sha224(message.id).hexdigest()[:50],
             author=message.user.username,
             author_uid=message.user.username,
-            content=message.caption,
+            avatar=message.user.profile_picture,
+            content=message.caption.text,
             date=message.created_time,
             image=message.images['standard_resolution'].url,
+            video=message.videos['standard_resolution'].url if hasattr(message, 'videos') else None,
             link=message.link
         )

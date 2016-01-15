@@ -29,7 +29,7 @@ class Channel(models.Model):
     source = models.CharField(_('Social media'), max_length=50, choices=SOURCE_CHOICES, default=SOURCE_CHOICES[0])
     limit = models.IntegerField(_('Limit'), null=True, blank=True)
     query = models.CharField(_('Query'), max_length=255, help_text=_('Enter a search query or user/page id.'))
-    query_type = models.CharField(_('Search for:'), choices=QUERY_TYPE, default=FEED, max_length=5,
+    query_type = models.CharField(_('Search for:'), choices=QUERY_TYPE, default=FEED, max_length=10,
                                   help_text=_('Note: search is not applicable for Facebook.'))
 
     periodicity = models.IntegerField(_('Periodicy'), default=60,
@@ -87,9 +87,14 @@ class Post(models.Model):
 
     author = models.CharField(_('Author name'), max_length=50)
     author_uid = models.CharField(_('Author id'), max_length=50)
+    avatar = models.ImageField(
+        _('Avatar'), upload_to='socialfeedsparser/avatars', null=True, blank=True)
     content = models.TextField(_('Post content'))
     image = models.ImageField(
         _('Image'), upload_to='socialfeedsparser', null=True, blank=True)
+    video = models.URLField(
+        _('Video'), max_length=255, null=True, blank=True
+    )
     date = models.DateTimeField(_('Date'), null=True, blank=True)
     order = models.IntegerField(_('Order'), default=0)
     is_active = models.BooleanField(_('Is Active'), default=True)

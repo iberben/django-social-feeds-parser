@@ -2,7 +2,9 @@ import hashlib
 import os
 import urllib2
 
+from django.conf import settings
 from django.core.files.base import ContentFile
+from django.utils import timezone
 
 
 class ChannelParser(object):
@@ -78,7 +80,7 @@ class PostParser(object):
     """
     Manages the formating of posts into database compatible objects for the models.Post class.
     """
-    def __init__(self, uid, author=None, author_uid=None, content=None, image=None, date=None, link=None):
+    def __init__(self, uid, author=None, author_uid=None, avatar=None, content=None, image=None, video=None, date=None, link=None):
         """
         :param uid: ;unique id of the post in the source.
         :type item: str
@@ -87,6 +89,9 @@ class PostParser(object):
         :type item: str
 
         :param author_uid: id of the author who poster the message.
+        :type item: str
+
+        :param avatar: image url of avatar of the author of the message.
         :type item: str
 
         :param about_us: post content.
@@ -104,8 +109,10 @@ class PostParser(object):
         self.uid = uid
         self.author = author
         self.author_uid = author_uid
+        self.avatar = avatar
         self.content = content
         self.image = image
+        self.video = video
         self.date = date
         self.link = link
 
@@ -122,15 +129,30 @@ class PostParser(object):
             sau = Post.objects.get(
                 source_uid=self.uid, channel=channel)
         except Post.DoesNotExist:
+            if getattr(settings, 'USE_TZ', False):
+                date = timezone.make_aware(self.date, timezone.get_current_timezone())
+            else:
+                date = self.date
+
             sau = Post(
                 source_uid=self.uid,
                 channel=channel,
                 author=self.author,
                 author_uid=self.author_uid,
+                avatar=self.avatar,
                 content=self.content,
-                date=self.date,
+                video=self.video,
+                date=date,
                 link=self.link
             )
+
+            if self.avatar:
+                base_file_name = os.path.basename(self.avatar)
+                file_name = hashlib.sha224(base_file_name).hexdigest()[:50]
+                downloaded = urllib2.urlopen(self.avatar).read()
+                image_file = ContentFile(downloaded, name=file_name)
+                sau.avatar.save(file_name, image_file)
+
             if self.image:
                 base_file_name = os.path.basename(self.image)
                 file_name = hashlib.sha224(base_file_name).hexdigest()[:50]

@@ -53,7 +53,7 @@ class FacebookSource(ChannelParser):
         :type item: dict
         """
 
-        if not 'from' in message:
+        if 'from' not in message:
             message['from'] = {
                 'id': channel.query,
                 'name': channel.name,
@@ -68,6 +68,7 @@ class FacebookSource(ChannelParser):
             uid=message['id'],
             author=message['from']['name'],
             author_uid=message['from']['id'],
+            avatar=message.get('picture', None),
             content=message.get('message', '') or message.get(
                 'description', ''),
             date=message['created_time'],

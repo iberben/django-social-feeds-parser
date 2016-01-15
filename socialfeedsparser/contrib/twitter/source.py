@@ -25,7 +25,7 @@ class TwitterSource(ChannelParser):
         """
         return self.get_api().user_timeline(
             screen_name=screen_name, count=count,
-            include_entities=True, include_rts=True)
+            include_entities=True, include_rts=False)
 
     def get_messages_search(self, search):
         """
@@ -35,8 +35,8 @@ class TwitterSource(ChannelParser):
         :type item: str
         """
         return self.get_api().search(
-            q=search,
-            count=self.spoke_source.limit)
+            q=search, include_entities=True, result_type='mixed',
+            count=self.channel.limit)
 
     def get_api(self):
         """
@@ -55,16 +55,35 @@ class TwitterSource(ChannelParser):
         :param message: message entry to convert.
         :type item: dict
         """
-        # TODO: add getting images from tweet
-        # https://dev.twitter.com/docs/tweet-entities
+
+        # I assume there is only one video or image
+        video_url = None
+        image_url = None
+        if 'media' in message.entities:
+            url = message.entities['media'][0]['expanded_url']
+            image_url = message.entities['media'][0]['media_url']
+
+            if '/video/' in url:
+                # print '>>> VIDEO FOUND ??'
+                # extended_entities are not in the search JSON yet..
+                # Get the tweet via the status JSON and retrieve the video url from there.
+                status = self.get_api().get_status(id=message.id)
+                if 'extended_entities' in status:
+                    try:
+                        print status
+                        video_url = status['extended_entities']['video_info']['variants'][0]['url']
+                    except:
+                        pass
 
         return PostParser(
             uid=message.id_str,
             author=message.user.name,
             author_uid=message.user.screen_name,
+            avatar=message.user.profile_image_url,
             content=message.text,
             date=message.created_at,
-            image=message.user.profile_image_url,
+            image=image_url,
+            video=video_url,
             link='https://twitter.com/%s/status/%s' % (
                 message.user.screen_name, message.id_str)
         )

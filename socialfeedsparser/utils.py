@@ -2,17 +2,21 @@ import re
 
 
 url_regex = re.compile(r"""
-   [^\s]             # not whitespace
-   [a-zA-Z0-9:/\-]+  # the protocol and domain name
-   \.(?!\.)          # A literal '.' not followed by another
-   [\w\-\./\?=&%~#]+ # country and path components
-   [^\s]             # not whitespace""", re.VERBOSE)
+    [^\s]             # not whitespace
+    [a-zA-Z0-9:/\-]+  # the protocol and domain name
+    \.(?!\.)          # A literal '.' not followed by another
+    [\w\-\./\?=&%~#]+ # country and path components
+    [^\s]             # not whitespace""", re.VERBOSE)
+# """)
+
 hashtag_regex = re.compile(r"""
-   \#                # a hashmark
-   [^\s]*            # not whitespace repeated""", re.VERBOSE)
+    \#                # a hashmark
+    [^\s]*            # not whitespace repeated""", re.VERBOSE)
+# """)
 arobase_regex = re.compile(r"""
-   \@                # a hashmark
-   [^\s]*            # not whitespace repeated""", re.VERBOSE)
+    \@                # a hashmark
+    [^\s]*            # not whitespace repeated""", re.VERBOSE)
+# """)
 
 
 def linkify_url(message):
