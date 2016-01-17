@@ -6,17 +6,18 @@ url_regex = re.compile(r"""
     [a-zA-Z0-9:/\-]+  # the protocol and domain name
     \.(?!\.)          # A literal '.' not followed by another
     [\w\-\./\?=&%~#]+ # country and path components
-    [^\s]             # not whitespace""", re.VERBOSE)
-# """)
+    [^\s]             # not whitespace
+""", re.VERBOSE)
 
 hashtag_regex = re.compile(r"""
     \#                # a hashmark
-    [^\s]*            # not whitespace repeated""", re.VERBOSE)
-# """)
+    [^\s]*            # not whitespace repeated
+""", re.VERBOSE)
+
 arobase_regex = re.compile(r"""
     \@                # a hashmark
-    [^\s]*            # not whitespace repeated""", re.VERBOSE)
-# """)
+    [^\s]*            # not whitespace repeated
+""", re.VERBOSE)
 
 
 def linkify_url(message):
@@ -29,7 +30,7 @@ def linkify_url(message):
     for url in url_regex.findall(message):
         if url.endswith('.'):
             url = url[:-1]
-        if 'http://' not in url:
+        if not url.startswith('http://') and not url.startswith('https://'):
             href = 'http://' + url
         else:
             href = url

@@ -116,7 +116,7 @@ class Post(models.Model):
         message = linkify_url(self.content)
 
         if self.channel.source in ('twitter', 'Twitter',):
-            message = linkify_hashes(message)
+            # message = linkify_hashes(message)
             message = linkify_arobase(message)
 
         return message
