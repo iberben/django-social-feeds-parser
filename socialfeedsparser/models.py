@@ -120,3 +120,10 @@ class Post(models.Model):
             message = linkify_arobase(message)
 
         return message
+
+    @property
+    def only_text(self):
+        """
+        Return if the post only contains text.
+        """
+        return not self.video and not self.image
