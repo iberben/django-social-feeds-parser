@@ -11,7 +11,6 @@ def get_messages(modeladmin, request, queryset):
     Collects messages from selected sources.
     """
     for source in queryset:
-        print '>>> ', source
         sc = source.source_class(channel=source)
         sc.collect_messages()
         source.updated = now()

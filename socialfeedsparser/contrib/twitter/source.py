@@ -113,7 +113,6 @@ class TwitterSource(ChannelParser):
                 status = self.get_api().get_status(id=message.id)
                 if hasattr(status, 'extended_entities'):
                     try:
-                        print status
                         video_url = status.extended_entities['media'][0]['video_info']['variants'][0]['url']
                     except:
                         pass
