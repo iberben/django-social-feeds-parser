@@ -71,6 +71,8 @@ class TwitterSource(ChannelParser):
         if len(results) > 0:
             # get the last result, it most likely to be the image
             url = results[len(results)-1]
+            if not url.startswith('http'):
+                url = "http://%s" % url
 
             session = requests.Session()  # so connections are recycled
             resp = session.head(url, allow_redirects=True)
