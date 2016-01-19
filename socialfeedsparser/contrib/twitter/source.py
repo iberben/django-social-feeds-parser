@@ -61,7 +61,7 @@ class TwitterSource(ChannelParser):
                            client_secret=INSTAGRAM_CLIENT_SECRET)
         return api
 
-    def get_video_image(self, message, status):
+    def get_video_image(self, message):
         """
         Return the link to the image of Instagram of the video for youtube
         """
@@ -137,7 +137,7 @@ class TwitterSource(ChannelParser):
         else:
             # Check of there's an instagram image in the content.
             # It's blocked by twitter itself so it's not in de media entities.
-            image_url, video_url = self.get_video_image(message.text, status)
+            image_url, video_url = self.get_video_image(message.text)
 
         return PostParser(
             uid=message.id_str,
