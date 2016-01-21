@@ -1,6 +1,8 @@
 import tweepy
 import requests
 
+from urlparse import urlparse, parse_qs
+
 from BeautifulSoup import BeautifulSoup
 
 from instagram.client import InstagramAPI
@@ -104,6 +106,15 @@ class TwitterSource(ChannelParser):
                     from raven import Client
                     client = Client('https://b3f0f4be0fd94302a41194a3a22bfcf9:1ac106b351bc474aba0c6e0eb7ba2bae@app.getsentry.com/63047')
                     client.captureException()
+            elif 'youtube.com' in resp.url:
+                # get video id
+                qs = parse_qs(urlparse(url).query)
+                try:
+                    image_url = 'http://img.youtube.com/vi/%s/hqdefault.jpg' % qs['v']
+                except:
+                    pass
+
+                return image_url, resp.url
             elif 'youtu.be' in resp.url:
                 # get video id
                 splitted = resp.url.split('/')
