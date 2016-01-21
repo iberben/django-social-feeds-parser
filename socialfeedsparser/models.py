@@ -8,6 +8,7 @@ from .settings import SOCIALFEEDSPARSER_SOURCE
 
 # load all sources
 from .utils import get_source, linkify_url, linkify_hashes, linkify_arobase
+from .enums import Language
 
 SOURCE = [import_module(s).SOCIALFEEDSPARSER_SOURCE for s in SOCIALFEEDSPARSER_SOURCE]
 SOURCE_CHOICES = [(s.slug, s.name) for s in SOURCE]
@@ -84,6 +85,7 @@ class Post(models.Model):
     source_uid = models.CharField(_('ID in the social media source'), max_length=255, editable=False)
     channel = models.ForeignKey(Channel)
     link = models.CharField(_('Link'), null=True, blank=True, max_length=255)
+    language = models.CharField(_('Language'), null=True, blank=True, max_length=2, choices=Language.choices)
 
     author = models.CharField(_('Author name'), max_length=50)
     author_uid = models.CharField(_('Author id'), max_length=50)
@@ -95,6 +97,7 @@ class Post(models.Model):
     video = models.URLField(
         _('Video'), max_length=255, null=True, blank=True
     )
+    repost = models.BooleanField(_('Is repost'), default=False)
     date = models.DateTimeField(_('Date'), null=True, blank=True)
     order = models.IntegerField(_('Order'), default=0)
     is_active = models.BooleanField(_('Is Active'), default=True)

@@ -31,6 +31,7 @@ setup(
     install_requires=[
         'facebook-sdk==0.4.0',
         'python-instagram==1.3.2',
-        'tweepy==3.5.0'
+        'tweepy==3.5.0',
+        'BeautifulSoup==3.2.1',
     ],
 )

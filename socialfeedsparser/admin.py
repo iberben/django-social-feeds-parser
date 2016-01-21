@@ -34,9 +34,9 @@ class PostAdmin(admin.ModelAdmin):
     Admin class for the Post model.
     """
     list_display = ('channel', 'author', 'content_admin', 'date',
-                    'is_active', 'order')
-    list_filter = ('is_active', 'channel')
-    list_editable = ('is_active', 'order', 'author', 'date')
+                    'is_active', 'order', 'language', 'repost')
+    list_filter = ('is_active', 'channel', 'repost', 'language')
+    list_editable = ('is_active', 'order', 'author', 'date', 'repost', 'language')
 
     def content_admin(self, obj):
         return truncatewords(obj.content, 20)

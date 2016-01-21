@@ -80,7 +80,8 @@ class PostParser(object):
     """
     Manages the formating of posts into database compatible objects for the models.Post class.
     """
-    def __init__(self, uid, author=None, author_uid=None, avatar=None, content=None, image=None, video=None, date=None, link=None):
+    def __init__(self, uid, author=None, author_uid=None, avatar=None, content=None, image=None,
+                 video=None, date=None, link=None, language=None):
         """
         :param uid: ;unique id of the post in the source.
         :type item: str
@@ -105,6 +106,9 @@ class PostParser(object):
 
         :param link: unique url of the post.
         :type item: str
+
+        :parem language: the language of the post.
+        :type item: str
         """
         self.uid = uid
         self.author = author
@@ -115,6 +119,7 @@ class PostParser(object):
         self.video = video
         self.date = date
         self.link = link
+        self.language = language
 
     def save(self, channel):
         """
@@ -124,6 +129,7 @@ class PostParser(object):
         :type item: int
         """
         from socialfeedsparser.models import Post
+        from socialfeedsparser.enums import Language
 
         try:
             sau = Post.objects.get(
@@ -134,6 +140,11 @@ class PostParser(object):
             else:
                 date = self.date
 
+            # parse language
+            list_languages = [l[0] for l in Language.choices]
+            if self.language not in list_languages:
+                self.language = None
+
             sau = Post(
                 source_uid=self.uid,
                 channel=channel,
@@ -143,7 +154,9 @@ class PostParser(object):
                 content=self.content,
                 video=self.video,
                 date=date,
-                link=self.link
+                link=self.link,
+                repost=self.content.statswith('RT'),
+                language=self.language,
             )
 
             if self.avatar:

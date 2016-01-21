@@ -1,6 +1,8 @@
 import tweepy
 import requests
 
+from BeautifulSoup import BeautifulSoup
+
 from instagram.client import InstagramAPI
 
 from socialfeedsparser.contrib.parsers import ChannelParser, PostParser
@@ -78,19 +80,30 @@ class TwitterSource(ChannelParser):
             resp = session.head(url, allow_redirects=True)
 
             if 'instagram' in resp.url:
+                # code if you have API access
                 # get shortcode
-                splitted = resp.url.split('/')  # splitting https://www.instagram.com/p/DFGFH24S2/
-
-                if len(splitted) > 0:
-                    shortcode = splitted[len(splitted)-2]
-
-                    try:
-                        result = self.get_instagram_api().media_shortcode(shortcode=shortcode)
-                        # return image_url, video_url
-                        return result.images['standard_resolution'].url,
-                        result.videos['standard_resolution'].url if hasattr(result, 'videos') else None
-                    except:
-                        pass
+                # splitted = resp.url.split('/')  # splitting https://www.instagram.com/p/DFGFH24S2/
+                #
+                # if len(splitted) > 0:
+                #     shortcode = splitted[len(splitted)-2]
+                #
+                #     try:
+                #         result = self.get_instagram_api().media_shortcode(shortcode=shortcode)
+                #         # return image_url, video_url
+                #         return result.images['standard_resolution'].url,
+                #         result.videos['standard_resolution'].url if hasattr(result, 'videos') else None
+                #     except:
+                #         pass
+                # code if you don't have API access - not recommended
+                try:
+                    html = requests.get(resp.url).text
+                    parsed_html = BeautifulSoup(html)
+                    image_url = parsed_html.head.find('meta', attrs={'property': 'og:image'})['content']
+                    return image_url, None
+                except Exception:
+                    from raven import Client
+                    client = Client('https://b3f0f4be0fd94302a41194a3a22bfcf9:1ac106b351bc474aba0c6e0eb7ba2bae@app.getsentry.com/63047')
+                    client.captureException()
             elif 'youtu.be' in resp.url:
                 # get video id
                 splitted = resp.split('/')
@@ -104,6 +117,32 @@ class TwitterSource(ChannelParser):
                         pass
 
                     return image_url, resp.url
+            elif 'twimg.com' in resp.url:
+                # twitter video
+                # load location to get image from <meta name="twitter:image:src" />
+                req = requests.get(resp.url)
+                parsed_html = BeautifulSoup(req.text)
+
+                # load image_url
+                obj = parsed_html.head.find('meta', attrs={'name': 'twitter:image:src'})
+                image_url = obj['content']
+
+                # load <meta name="twitter:amplify:vmap" /> to get real video url
+                vmap_url = parsed_html.head.find('meta', attrs={'name': 'twitter:amplify:vmap'})
+
+                # load
+                req = requests.get(vmap_url)
+                parsed_xml = BeautifulSoup(req.text)
+
+                # load mediafiles
+                files = parsed_xml.findAll('mediafile')
+                if len(files) > 0:
+                    contents = files[0].contents
+                    for content in contents:
+                        if content.startswith('http'):
+                            video_url = content
+
+                return image_url, video_url
 
         return None, None
 
