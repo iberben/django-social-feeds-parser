@@ -108,12 +108,8 @@ class TwitterSource(ChannelParser):
                     client.captureException()
             elif 'youtube.com' in resp.url:
                 # get video id
-                qs = parse_qs(urlparse(url).query)
-                try:
-                    image_url = 'http://img.youtube.com/vi/%s/hqdefault.jpg' % qs['v']
-                except:
-                    pass
-
+                qs = parse_qs(urlparse(resp.url).query)
+                image_url = 'http://img.youtube.com/vi/%s/hqdefault.jpg' % qs['v']
                 return image_url, resp.url
             elif 'youtu.be' in resp.url:
                 # get video id
@@ -121,12 +117,7 @@ class TwitterSource(ChannelParser):
 
                 if len(splitted) > 0:
                     video_id = splitted[len(splitted)-1]
-
-                    try:
-                        image_url = 'http://img.youtube.com/vi/%s/hqdefault.jpg' % video_id
-                    except:
-                        pass
-
+                    image_url = 'http://img.youtube.com/vi/%s/hqdefault.jpg' % video_id
                     return image_url, resp.url
             elif 'twimg.com' in resp.url:
                 # twitter video
