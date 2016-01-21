@@ -155,7 +155,7 @@ class PostParser(object):
                 video=self.video,
                 date=date,
                 link=self.link,
-                repost=self.content.statswith('RT'),
+                repost=self.content.startswith('RT'),
                 language=self.language,
             )
 
