@@ -128,7 +128,7 @@ class TwitterSource(ChannelParser):
                 image_url = obj['content']
 
                 # load <meta name="twitter:amplify:vmap" /> to get real video url
-                vmap_url = parsed_html.head.find('meta', attrs={'name': 'twitter:amplify:vmap'})
+                vmap_url = parsed_html.head.find('meta', attrs={'name': 'twitter:amplify:vmap'})['content']
 
                 # load
                 req = requests.get(vmap_url)
