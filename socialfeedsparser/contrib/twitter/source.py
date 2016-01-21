@@ -106,7 +106,7 @@ class TwitterSource(ChannelParser):
                     client.captureException()
             elif 'youtu.be' in resp.url:
                 # get video id
-                splitted = resp.split('/')
+                splitted = resp.url.split('/')
 
                 if len(splitted) > 0:
                     video_id = splitted[len(splitted)-1]
