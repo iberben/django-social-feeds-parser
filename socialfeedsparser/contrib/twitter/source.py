@@ -109,7 +109,7 @@ class TwitterSource(ChannelParser):
             elif 'youtube.com' in resp.url:
                 # get video id
                 qs = parse_qs(urlparse(resp.url).query)
-                image_url = 'http://img.youtube.com/vi/%s/hqdefault.jpg' % qs['v']
+                image_url = 'http://img.youtube.com/vi/%s/hqdefault.jpg' % qs['v'][0]
                 return image_url, resp.url
             elif 'youtu.be' in resp.url:
                 # get video id
