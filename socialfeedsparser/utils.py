@@ -2,7 +2,6 @@ import re
 
 
 url_regex = re.compile(r"""
-    [^\s]             # not whitespace
     http[s]?://       # the protocol
     [a-zA-Z0-9:/\-]+  # domain name
     \.(?!\.)          # A literal '.' not followed by another
