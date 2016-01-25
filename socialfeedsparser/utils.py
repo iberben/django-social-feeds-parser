@@ -3,7 +3,8 @@ import re
 
 url_regex = re.compile(r"""
     [^\s]             # not whitespace
-    [a-zA-Z0-9:/\-]+  # the protocol and domain name
+    http[s]?://       # the protocol
+    [a-zA-Z0-9:/\-]+  # domain name
     \.(?!\.)          # A literal '.' not followed by another
     [\w\-\./\?=&%~#]+ # country and path components
     [^\s]             # not whitespace
