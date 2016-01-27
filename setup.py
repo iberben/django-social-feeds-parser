@@ -34,6 +34,7 @@ setup(
         'tweepy==3.5.0',
         'BeautifulSoup==3.2.1',
         'requests',
-        'requests[security]'
+        'requests[security]',
+        'langdetect==1.0.5',
     ],
 )

@@ -2,6 +2,8 @@ import hashlib
 import os
 import urllib2
 
+from langdetect import detect
+
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.utils import timezone
@@ -81,7 +83,7 @@ class PostParser(object):
     Manages the formating of posts into database compatible objects for the models.Post class.
     """
     def __init__(self, uid, author=None, author_uid=None, avatar=None, content=None, image=None,
-                 video=None, date=None, link=None, language=None):
+                 video=None, date=None, link=None):
         """
         :param uid: ;unique id of the post in the source.
         :type item: str
@@ -106,9 +108,6 @@ class PostParser(object):
 
         :param link: unique url of the post.
         :type item: str
-
-        :parem language: the language of the post.
-        :type item: str
         """
         self.uid = uid
         self.author = author
@@ -119,7 +118,6 @@ class PostParser(object):
         self.video = video
         self.date = date
         self.link = link
-        self.language = language
 
     def save(self, channel):
         """
@@ -142,8 +140,11 @@ class PostParser(object):
 
             # parse language
             list_languages = [l[0] for l in Language.choices]
-            if self.language not in list_languages:
+            detected_language = detect(self.content)
+            if detected_language not in list_languages:
                 self.language = None
+            else:
+                self.language = detected_language
 
             sau = Post(
                 source_uid=self.uid,
