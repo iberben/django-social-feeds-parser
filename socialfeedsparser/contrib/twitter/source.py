@@ -111,7 +111,7 @@ class TwitterSource(ChannelParser):
                 qs = parse_qs(urlparse(resp.url).query)
                 if 'v' in qs:
                     image_url = 'http://img.youtube.com/vi/%s/hqdefault.jpg' % qs['v'][0]
-                    return image_url, resp.url
+                    return image_url, 'https://www.youtube.com/embed/%s' % qs['v'][0]
             elif 'youtu.be' in resp.url:
                 # get video id
                 splitted = resp.url.split('/')
@@ -119,7 +119,7 @@ class TwitterSource(ChannelParser):
                 if len(splitted) > 0:
                     video_id = splitted[len(splitted)-1]
                     image_url = 'http://img.youtube.com/vi/%s/hqdefault.jpg' % video_id
-                    return image_url, resp.url
+                    return image_url, 'https://www.youtube.com/embed/%s' % video_id
             elif 'twimg.com' in resp.url:
                 # twitter video
                 # load location to get image from <meta name="twitter:image:src" />

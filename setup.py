@@ -33,5 +33,7 @@ setup(
         'python-instagram==1.3.2',
         'tweepy==3.5.0',
         'BeautifulSoup==3.2.1',
+        'requests',
+        'requests[security]'
     ],
 )
