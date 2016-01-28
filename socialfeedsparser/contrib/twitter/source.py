@@ -1,6 +1,6 @@
 import tweepy
 import requests
-from requests.exceptions import ConnectionError
+from requests.exceptions import ConnectionError, TooManyRedirects
 from raven import Client
 
 from urlparse import urlparse, parse_qs
@@ -83,7 +83,7 @@ class TwitterSource(ChannelParser):
             try:
                 session = requests.Session()  # so connections are recycled
                 resp = session.head(url, allow_redirects=True)
-            except ConnectionError:
+            except (ConnectionError, TooManyRedirects):
                 resp = None
                 client = Client('https://b3f0f4be0fd94302a41194a3a22bfcf9:1ac106b351bc474aba0c6e0eb7ba2bae@app.getsentry.com/63047')
                 client.captureException()
