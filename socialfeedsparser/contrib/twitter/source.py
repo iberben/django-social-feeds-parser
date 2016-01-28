@@ -1,5 +1,7 @@
 import tweepy
 import requests
+from requests.exceptions import ConnectionError
+from raven import Client
 
 from urlparse import urlparse, parse_qs
 
@@ -78,8 +80,13 @@ class TwitterSource(ChannelParser):
             if not url.startswith('http'):
                 url = "http://%s" % url
 
-            session = requests.Session()  # so connections are recycled
-            resp = session.head(url, allow_redirects=True)
+            try:
+                session = requests.Session()  # so connections are recycled
+                resp = session.head(url, allow_redirects=True)
+            except ConnectionError:
+                resp = None
+                client = Client('https://b3f0f4be0fd94302a41194a3a22bfcf9:1ac106b351bc474aba0c6e0eb7ba2bae@app.getsentry.com/63047')
+                client.captureException()
 
             if 'instagram' in resp.url:
                 # code if you have API access
@@ -103,7 +110,6 @@ class TwitterSource(ChannelParser):
                     image_url = parsed_html.head.find('meta', attrs={'property': 'og:image'})['content']
                     return image_url, None
                 except Exception:
-                    from raven import Client
                     client = Client('https://b3f0f4be0fd94302a41194a3a22bfcf9:1ac106b351bc474aba0c6e0eb7ba2bae@app.getsentry.com/63047')
                     client.captureException()
             elif 'youtube.com' in resp.url:
