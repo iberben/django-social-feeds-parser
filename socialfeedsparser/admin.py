@@ -37,6 +37,7 @@ class PostAdmin(admin.ModelAdmin):
                     'is_active', 'order', 'language', 'repost', 'content_type')
     list_filter = ('is_active', 'channel', 'repost', 'language', 'content_type')
     list_editable = ('is_active', 'order', 'author', 'date', 'repost', 'language')
+    search_fields = ('author', 'image', 'video', 'content')
 
     def content_admin(self, obj):
         return truncatewords(obj.content, 20)
