@@ -125,6 +125,18 @@ class Post(models.Model):
         return message
 
     @property
+    def content_type(self):
+        """
+        Return the type of the post: photo, video or text.
+        """
+        if self.video:
+            return 'video'
+        elif self.image:
+            return 'image'
+        else:
+            return 'text'
+
+    @property
     def only_text(self):
         """
         Return if the post only contains text.
