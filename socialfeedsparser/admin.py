@@ -35,9 +35,12 @@ class PostAdmin(admin.ModelAdmin):
     """
     list_display = ('channel', 'author', 'content_admin', 'date',
                     'is_active', 'order', 'language', 'repost', 'content_type')
-    list_filter = ('is_active', 'channel', 'repost', 'language', 'content_type')
+    list_filter = ('is_active', 'channel', 'repost', 'language')
     list_editable = ('is_active', 'order', 'author', 'date', 'repost', 'language')
     search_fields = ('author', 'image', 'video', 'content')
+
+    def content_type(self, obj):
+        return obj.content_type
 
     def content_admin(self, obj):
         return truncatewords(obj.content, 20)
