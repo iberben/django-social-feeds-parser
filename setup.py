@@ -29,6 +29,7 @@ setup(
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
     ],
     install_requires=[
+        'django<1.10,>=1.8.1',
         'facebook-sdk==0.4.0',
         'python-instagram==1.3.2',
         'tweepy==3.5.0',
