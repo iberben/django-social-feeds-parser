@@ -86,7 +86,7 @@ class Post(models.Model):
     Model storing posts of stored sources in SpokeSource.
     """
     source_uid = models.CharField(_('ID in the social media source'), max_length=255, editable=False)
-    channel = models.ForeignKey(Channel)
+    channel = models.ForeignKey(Channel, db_index=True)
     link = models.CharField(_('Link'), null=True, blank=True, max_length=255)
     language = models.CharField(_('Language'), null=True, blank=True, max_length=2, choices=Language.choices)
 
@@ -103,7 +103,7 @@ class Post(models.Model):
     repost = models.BooleanField(_('Is repost'), default=False)
     date = models.DateTimeField(_('Date'), null=True, blank=True)
     order = models.IntegerField(_('Order'), default=0)
-    is_active = models.BooleanField(_('Is Active'), default=True)
+    is_active = models.BooleanField(_('Is Active'), default=True, db_index=True)
     like_count = models.PositiveIntegerField(_('Like count'), null=True,
                                              blank=True)
 
